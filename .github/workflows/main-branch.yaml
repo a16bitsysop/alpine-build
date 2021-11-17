@@ -58,5 +58,5 @@ jobs:
           platforms: linux/s390x
           push: true
           tags: |
-            ghcr.io/a16bitsysop/docker-lttng:${{env.timestamp}}
-            ghcr.io/a16bitsysop/docker-lttng:latest
+            ghcr.io/a16bitsysop/alpine-build:${{env.timestamp}}
+            ghcr.io/a16bitsysop/alpine-build:latest

@@ -12,15 +12,12 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk pax-utils atools git sudo gdb f
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
 && echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
-&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
+&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
+&& sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
 # create build keys and copy public key so can install without allow untrusted
 RUN  su ${NME} -c "abuild-keygen -a -i -n" \
 && cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/
-
-RUN echo "PACKAGER=\"${FULL} <${EMAIL}>\"" >> /etc/abuild.conf \
-&& echo 'MAINTAINER="$PACKAGER"' >> /etc/abuild.conf \
-&& sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 

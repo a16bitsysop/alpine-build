@@ -24,6 +24,5 @@ then
 fi
 
 echo "Copying Packages"
-cd /tmp || exit 1
 mkdir -p packages/"$(uname -m)"
 cp -a /home/"$NME"/packages/* packages/"$(uname -m)"

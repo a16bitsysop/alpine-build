@@ -1,8 +1,9 @@
-FROM alpine:edge AS buildbase
+ARG DVER edge
+ARG NME builder
 
-ENV NME builder
-ENV FULL "builder builder"
-ENV EMAIL "build@build"
+##################################################################################################
+FROM alpine:${DVER} AS buildbase
+ARG NME
 
 RUN apk add --no-cache -u alpine-conf alpine-sdk pax-utils atools git sudo gdb findutils
 
@@ -13,17 +14,14 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && chgrp abuild /var/cache/distfiles \
 && chmod g+w /var/cache/distfiles
 
-RUN echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
-&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
+RUN echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
 
-RUN  su ${NME} -c "abuild-keygen -a -i -n"
-RUN echo "PACKAGER=\"${FULL} <${EMAIL}>\"" >> /etc/abuild.conf \
-&& echo 'MAINTAINER="$PACKAGER"' >> /etc/abuild.conf \
-&& sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
+RUN su ${NME} -c "abuild-keygen -a -i -n"
+RUN sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-##
+##################################################################################################
 FROM buildbase AS buildust
-ENV NME builder
+ARG NME
 
 COPY just-build.sh /usr/local/bin/
 
@@ -34,9 +32,9 @@ RUN apk update
 USER ${NME}
 RUN just-build.sh
 
-##
+##################################################################################################
 FROM buildbase AS buildtools
-ENV NME builder
+ARG NME
 
 COPY just-build.sh /usr/local/bin/
 COPY --from=buildust /tmp/packages/* /tmp/packages/

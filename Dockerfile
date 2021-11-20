@@ -9,9 +9,9 @@ ARG NME
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo
 
 # setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} wheel \
+RUN adduser -D ${NME} && addgroup ${NME} abuild \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
-&& echo /tmp/packages >> /etc/apk/repositories
+&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 
@@ -40,6 +40,7 @@ ARG NME
 
 COPY --chmod=644 --from=buildust /tmp/packages/* /tmp/packages/
 RUN find /tmp/packages -type f
+RUN echo /tmp/packages >> /etc/apk/repositories
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-tools ./

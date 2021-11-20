@@ -22,16 +22,17 @@ USER ${NME}
 RUN  abuild-keygen -a -i -n \
 && doas cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/ \
 && mkdir ~/packages
+USER root
 
 #########################################################################################
 FROM buildbase AS buildust
 ARG NME
 
 WORKDIR /tmp
-COPY lttng-ust ./
+COPY --chown=${NME}:${NME} lttng-ust ./
 
+USER ${NME}
 RUN doas apk update
-ENV SUDO doas
 RUN just-build.sh
 
 #########################################################################################
@@ -42,8 +43,8 @@ COPY --chmod=644 --from=buildust /tmp/packages/* /tmp/packages/
 RUN find /tmp/packages -type f
 
 WORKDIR /tmp
-COPY lttng-tools ./
+COPY --chown=${NME}:${NME} lttng-tools ./
 
+USER ${NME}
 RUN doas apk update
-ENV SUDO doas
 RUN just-build.sh

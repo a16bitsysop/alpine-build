@@ -1,10 +1,9 @@
 ARG DVER=edge
-ARG BNME=buider
+ARG BNME=builder
 
 ##########################################################################################
 FROM alpine:${DVER} AS buildbase
 ENV NME ${BNME}
-ENV SUDO doas
 
 # install packages needed for abuild
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git pax-utils
@@ -15,6 +14,7 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && echo "permit nopass ${NME} as root" > /etc/doas.conf \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
+ENV SUDO doas
 # create build keys and copy public key so can install without allow untrusted
 RUN  su ${NME} -c "abuild-keygen -a -i -n" \
 && cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/

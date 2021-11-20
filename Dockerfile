@@ -1,9 +1,8 @@
 ARG DVER=edge
-ARG BNME=builder
+ARG NME=builder
 
 ##########################################################################################
 FROM alpine:${DVER} AS buildbase
-ENV NME=${BNME}
 
 # install packages needed for abuild
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git pax-utils
@@ -23,7 +22,6 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 
 #########################################################################################
 FROM buildbase AS buildust
-ENV NME=${BNME}
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./
@@ -34,7 +32,6 @@ RUN just-build.sh
 
 #########################################################################################
 FROM buildbase AS buildtools
-ENV NME ${BNME}
 
 COPY --chmod=644 --from=buildust /tmp/packages/* /tmp/packages/
 RUN find /tmp/packages -type f \

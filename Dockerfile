@@ -27,9 +27,8 @@ COPY just-build.sh /usr/local/bin/
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./
 
-RUN sudo apk update
-USER ${NME}
-RUN just-build.sh
+RUN sudo apk update \
+&&  just-build.sh
 
 ##################################################################################################
 FROM buildbase AS buildtools
@@ -39,11 +38,10 @@ COPY just-build.sh /usr/local/bin/
 COPY --from=buildust /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
 
-RUN echo /tmp/packages >> /etc/apk/repositories
+RUN sudo echo /tmp/packages >> /etc/apk/repositories
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-tools ./
 
-RUN sudo apk update
-USER ${NME}
-RUN just-build.sh
+RUN sudo apk update \
+&&  just-build.sh

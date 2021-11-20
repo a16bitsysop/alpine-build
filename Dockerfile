@@ -10,7 +10,6 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git p
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
-&& mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
 && echo "permit nopass $NME as root" > /etc/doas.d/doas.conf \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 

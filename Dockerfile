@@ -3,7 +3,7 @@ ARG BNME=builder
 
 ##########################################################################################
 FROM alpine:${DVER} AS buildbase
-ENV NME ${BNME}
+ENV NME=${BNME}
 
 # install packages needed for abuild
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git pax-utils
@@ -11,7 +11,7 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git p
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
-&& echo "permit nopass ${NME} as root" > /etc/doas.conf \
+&& echo "permit nopass ${NME} as root" > /etc/doas.d/doas.conf \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
 ENV SUDO doas
@@ -23,7 +23,7 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 
 #########################################################################################
 FROM buildbase AS buildust
-ENV NME ${BNME}
+ENV NME=${BNME}
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./

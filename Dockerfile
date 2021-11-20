@@ -1,5 +1,5 @@
-ARG DVER edge
-ARG NME builder
+ARG DVER=edge
+ARG NME=builder
 
 ##################################################################################################
 FROM alpine:${DVER} AS buildbase

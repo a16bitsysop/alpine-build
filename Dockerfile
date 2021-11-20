@@ -31,6 +31,7 @@ WORKDIR /tmp
 COPY lttng-ust ./
 
 RUN doas apk update
+ENV SUDO doas
 RUN just-build.sh
 
 #########################################################################################
@@ -44,4 +45,5 @@ WORKDIR /tmp
 COPY lttng-tools ./
 
 RUN doas apk update
+ENV SUDO doas
 RUN just-build.sh

@@ -21,7 +21,8 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 USER ${NME}
 RUN abuild-keygen -a -i -n \
 &&  mkdir "$HOME"/packages \
-&& sudo cp "$HOME"/.abuild/keys/.*rsa.pub /etc/apk/keys/
+&&  ls -lah "$HOME"/.abuild/keys \
+&&  ls -lah /etc/apk/keys
 
 ##################################################################################################
 FROM buildbase AS buildust

@@ -18,7 +18,7 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 COPY --chmod=755 just-build.sh /usr/local/bin/
 
 # switch to build user create keys and copy to global folder
-RUN su {NME} -c "abuild-keygen -a -i -n"
+RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}
 RUN mkdir "$HOME"/packages
 RUN ls -lah "$HOME"/.abuild

@@ -5,7 +5,8 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
-RUN apk add --no-cache -u alpine-conf alpine-sdk atools pax-utils findutils gdb git sudo
+RUN apk add --no-cache -u alpine-conf alpine-sdk atools pax-utils findutils gdb git sudo \
+&&  echo /tmp/packages >> /etc/apk/repositories
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild \
@@ -16,7 +17,6 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 USER ${NME}
 RUN abuild-keygen -a -i -n \
 &&  mkdir "$HOME"/packages
-
 
 ##################################################################################################
 FROM buildbase AS buildust
@@ -37,8 +37,6 @@ ARG NME
 COPY just-build.sh /usr/local/bin/
 COPY --from=buildust /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
-
-RUN sudo echo /tmp/packages >> /etc/apk/repositories
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-tools ./

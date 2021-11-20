@@ -10,8 +10,9 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git p
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
-&& echo "permit nopass $NME as root" > /etc/doas.d/doas.conf \
-&& sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
+&& echo "permit nopass ${NME} as root" > /etc/doas.d/doas.conf \
+&& sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
+&& echo /tmp/packages >> /etc/apk/repositories
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 
@@ -27,7 +28,7 @@ FROM buildbase AS buildust
 ARG NME
 
 WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-ust ./
+COPY lttng-ust ./
 
 RUN doas apk update
 RUN just-build.sh
@@ -37,11 +38,10 @@ FROM buildbase AS buildtools
 ARG NME
 
 COPY --chmod=644 --from=buildust /tmp/packages/* /tmp/packages/
-RUN find /tmp/packages -type f \
-&& doas echo /tmp/packages >> /etc/apk/repositories
+RUN find /tmp/packages -type f
 
 WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-tools ./
+COPY lttng-tools ./
 
 RUN doas apk update
 RUN just-build.sh

@@ -9,7 +9,7 @@ ARG NME
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo
 
 # setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild \
+RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
 && echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
 
@@ -18,10 +18,9 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 USER ${NME}
 # create build keys and copy public key so can install without allow untrusted
 RUN  abuild-keygen -a -i -n \
-&& sudo cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/ \
-&& mkdir -p "$HOME"/packages/$(uname -m) \
-&& ls -lah "$HOME"
+&& mkdir "$HOME"/packages
 USER root
+RUN cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/
 
 #########################################################################################
 FROM buildbase AS buildust

@@ -5,7 +5,8 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
-RUN apk add --no-cache -u alpine-conf alpine-sdk atools pax-utils findutils gdb git sudo \
+# install abuild deps and add /tmp/packages to repositories
+RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
 &&  echo /tmp/packages >> /etc/apk/repositories
 
 # setup build user
@@ -14,15 +15,17 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
 &&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
+COPY --chmod=755 just-build.sh /usr/local/bin/
+
+# switch to build user create keys and copy to global folder
 USER ${NME}
 RUN abuild-keygen -a -i -n \
-&&  mkdir "$HOME"/packages
+&&  mkdir "$HOME"/packages \
+&& sudo cp "$HOME"/.abuild/keys/.*rsa.pub /etc/apk/keys/
 
 ##################################################################################################
 FROM buildbase AS buildust
 ARG NME
-
-COPY just-build.sh /usr/local/bin/
 
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./
@@ -34,7 +37,6 @@ RUN sudo apk update \
 FROM buildbase AS buildtools
 ARG NME
 
-COPY just-build.sh /usr/local/bin/
 COPY --from=buildust /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
 

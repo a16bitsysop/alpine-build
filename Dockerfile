@@ -18,7 +18,7 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 USER ${NME}
 # create build keys and copy public key so can install without allow untrusted
 RUN  abuild-keygen -a -i -n \
-&& doas cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/ \
+&& sudo cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/ \
 && mkdir "$HOME"/packages \
 && ls -lah "$HOME"
 USER root
@@ -31,7 +31,7 @@ WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./
 
 USER ${NME}
-RUN doas apk update
+RUN sudo apk update
 RUN just-build.sh
 
 #########################################################################################
@@ -45,5 +45,5 @@ WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-tools ./
 
 USER ${NME}
-RUN doas apk update
+RUN sudo apk update
 RUN just-build.sh

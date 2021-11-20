@@ -17,19 +17,17 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 
-# switch to build user create keys and copy to global folder
+# create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}
 RUN mkdir "$HOME"/packages
-RUN ls -lah "$HOME"/.abuild
-RUN ls -lah /etc/apk/keys
 
 ##################################################################################################
 FROM buildbase AS buildust
 ARG NME
 
 WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-ust ./
+COPY lttng-ust ./
 
 RUN sudo apk update \
 &&  just-build.sh
@@ -42,7 +40,7 @@ COPY --from=buildust /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
 
 WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-tools ./
+COPY lttng-tools ./
 
 RUN sudo apk update \
 &&  just-build.sh

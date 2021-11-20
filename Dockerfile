@@ -21,7 +21,8 @@ USER ${NME}
 # create build keys and copy public key so can install without allow untrusted
 RUN  abuild-keygen -a -i -n \
 && doas cp /home/${NME}/.abuild/*.rsa.pub /etc/apk/keys/ \
-&& mkdir ~/packages
+&& mkdir "$HOME"/packages \
+&& ls -lah "$HOME"
 USER root
 
 #########################################################################################

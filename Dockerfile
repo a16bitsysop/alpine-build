@@ -8,7 +8,7 @@ ARG NME
 RUN apk add --no-cache -u alpine-conf alpine-sdk pax-utils atools git sudo gdb findutils
 
 # setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
+RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
 &&  mkdir -p /var/cache/distfiles \
 &&  chgrp abuild /var/cache/distfiles \

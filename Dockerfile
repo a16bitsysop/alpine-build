@@ -4,7 +4,7 @@ ARG BNME=buider
 ##########################################################################################
 FROM alpine:${DVER} AS buildbase
 ENV NME ${BNME}
-ENV SUDO=doas
+ENV SUDO doas
 
 # install packages needed for abuild
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git pax-utils

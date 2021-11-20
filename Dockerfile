@@ -5,14 +5,11 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
-RUN apk add --no-cache -u alpine-conf alpine-sdk pax-utils atools git sudo gdb findutils
+RUN apk add --no-cache -u alpine-conf alpine-sdk atools pax-utils findutils gdb git sudo
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild \
-&&  mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
-&&  mkdir -p /var/cache/distfiles \
-&&  chgrp abuild /var/cache/distfiles \
-&&  chmod g+w /var/cache/distfiles
+&&  mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages
 
 RUN echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}

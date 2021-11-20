@@ -27,7 +27,7 @@ FROM buildbase AS buildust
 ARG NME
 
 WORKDIR /tmp
-COPY lttng-ust ./
+COPY --chown=${NME}:${NME} lttng-ust ./
 
 RUN sudo apk update \
 &&  just-build.sh
@@ -40,7 +40,7 @@ COPY --from=buildust /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
 
 WORKDIR /tmp
-COPY lttng-tools ./
+COPY --chown=${NME}:${NME} lttng-tools ./
 
 RUN sudo apk update \
 &&  just-build.sh

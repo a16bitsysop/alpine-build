@@ -9,13 +9,14 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk atools pax-utils findutils gdb 
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild \
-&&  mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages
+&&  echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
+&&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
+&&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-RUN echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
-&&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
+USER ${NME}
+RUN abuild-keygen -a -i -n \
+&&  mkdir "$HOME"/packages
 
-RUN su ${NME} -c "abuild-keygen -a -i -n"
-RUN sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
 ##################################################################################################
 FROM buildbase AS buildust
@@ -26,7 +27,7 @@ COPY just-build.sh /usr/local/bin/
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-ust ./
 
-RUN apk update
+RUN sudo apk update
 USER ${NME}
 RUN just-build.sh
 
@@ -43,6 +44,6 @@ RUN echo /tmp/packages >> /etc/apk/repositories
 WORKDIR /tmp
 COPY --chown=${NME}:${NME} lttng-tools ./
 
-RUN apk update
+RUN sudo apk update
 USER ${NME}
 RUN just-build.sh

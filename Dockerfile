@@ -9,12 +9,13 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk pax-utils atools git sudo gdb f
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
-&& mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
-&& mkdir -p /var/cache/distfiles \
-&& chgrp abuild /var/cache/distfiles \
-&& chmod g+w /var/cache/distfiles
+&&  mkdir /home/${NME}/packages && chown ${NME}:${NME} /home/${NME}/packages \
+&&  mkdir -p /var/cache/distfiles \
+&&  chgrp abuild /var/cache/distfiles \
+&&  chmod g+w /var/cache/distfiles
 
-RUN echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
+RUN echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
+&&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
 
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 RUN sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf

@@ -21,9 +21,9 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 USER ${NME}
 RUN abuild-keygen -a -i -n
 RUN mkdir "$HOME"/packages
-RUN ls -lah "$HOME"/.abuild/keys
+RUN ls -lah "$HOME"/.abuild
 RUN ls -lah /etc/apk/keys
-
+RUN foobar
 ##################################################################################################
 FROM buildbase AS buildust
 ARG NME

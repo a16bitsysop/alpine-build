@@ -19,10 +19,10 @@ COPY --chmod=755 just-build.sh /usr/local/bin/
 
 # switch to build user create keys and copy to global folder
 USER ${NME}
-RUN abuild-keygen -a -i -n \
-&&  mkdir "$HOME"/packages \
-&&  ls -lah "$HOME"/.abuild/keys \
-&&  ls -lah /etc/apk/keys
+RUN abuild-keygen -a -i -n
+RUN mkdir "$HOME"/packages
+RUN ls -lah "$HOME"/.abuild/keys
+RUN ls -lah /etc/apk/keys
 
 ##################################################################################################
 FROM buildbase AS buildust

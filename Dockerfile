@@ -6,17 +6,15 @@ FROM alpine:${DVER} AS buildbase
 ARG NME
 
 # install packages needed for abuild
-RUN apk add --no-cache -u alpine-conf alpine-sdk atools doas findutils gdb git pax-utils
+RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
-&& echo "permit nopass ${NME} as root" > /etc/doas.d/doas.conf \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
 && echo /tmp/packages >> /etc/apk/repositories
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 
-ENV SUDO doas
 USER ${NME}
 # create build keys and copy public key so can install without allow untrusted
 RUN  abuild-keygen -a -i -n \

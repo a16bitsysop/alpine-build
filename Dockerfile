@@ -9,7 +9,7 @@ ARG NME
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo
 
 # setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
+RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} wheel \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
 && echo /tmp/packages >> /etc/apk/repositories
 

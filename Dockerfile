@@ -11,7 +11,10 @@ RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-ut
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild && addgroup ${NME} tty \
 && sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf \
-&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME}
+&& echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
+&& mkdir -p /var/cache/distfiles \
+&& chgrp abuild /var/cache/distfiles \
+&& chmod g+w /var/cache/distfiles
 
 COPY --chmod=755 just-build.sh /usr/local/bin/
 

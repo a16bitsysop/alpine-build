@@ -26,7 +26,7 @@ RUN mkdir "$HOME"/packages
 FROM buildbase AS builddep
 ARG NME
 ENV APORT=lttng-ust
-ENV REPO=community
+ENV REPO=main
 
 # copy aport folder into container
 #WORKDIR /tmp

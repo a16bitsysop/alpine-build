@@ -1,7 +1,9 @@
 #!/bin/sh
 
-# called inside aport folder
+# called inside aport folder or first arg is dir to cd into
 NME="builder"
+
+[ -n "$1" ] && cd "$1"
 
 if [ ! -f APKBUILD ]
 then
@@ -9,6 +11,8 @@ then
   exit 2
 fi
 
+echo "Updating ..."
+sudo apk update
 echo "Building ..."
 echo "Arch is: $(uname -m)"
 cd /tmp

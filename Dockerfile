@@ -23,24 +23,35 @@ USER ${NME}
 RUN mkdir "$HOME"/packages
 
 ##################################################################################################
-FROM buildbase AS buildust
+FROM buildbase AS builddep
 ARG NME
+ENV APORT=lttng-ust
+ENV REPO=community
 
-WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-ust ./
+# copy aport folder into container
+#WORKDIR /tmp
+#COPY --chown=${NME}:${NME} ${APORT} ./${APORT}
 
-RUN sudo apk update \
-&&  just-build.sh
+# or pull source
+RUN pull-apk-source.sh ${REPO}/${APORT}
+
+RUN just-build.sh ${APORT}
 
 ##################################################################################################
-FROM buildbase AS buildtools
+FROM buildbase AS buildaport
 ARG NME
+ENV APORT=lttng-tools
+ENV REPO=community
 
-COPY --from=buildust /tmp/packages/* /tmp/packages/
+# copy built packages from previous step
+COPY --from=builddep /tmp/packages/* /tmp/packages/
 RUN ls -lah /tmp/packages
 
-WORKDIR /tmp
-COPY --chown=${NME}:${NME} lttng-tools ./
+# copy aport folder into container
+#WORKDIR /tmp
+#COPY --chown=${NME}:${NME} ${APORT} ./${APORT}
 
-RUN sudo apk update \
-&&  just-build.sh
+# or pull source
+RUN pull-apk-source.sh ${REPO}/${APORT}
+
+RUN just-build.sh ${APORT}

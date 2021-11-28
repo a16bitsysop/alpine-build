@@ -15,7 +15,7 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
 &&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-COPY --chmod=755 just-build.sh /usr/local/bin/
+COPY --chmod=755 just-build.sh pull-apk-source.sh /usr/local/bin/
 
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"

@@ -15,7 +15,6 @@ echo "Updating ..."
 sudo apk update
 echo "Building ..."
 echo "Arch is: $(uname -m)"
-cd /tmp
 abuild checksum
 abuild -A
 abuild -rK
@@ -28,5 +27,5 @@ then
 fi
 
 echo "Copying Packages"
-mkdir -p packages/"$(uname -m)"
-cp -a /home/"$NME"/packages/* packages/"$(uname -m)"
+sudo mkdir -p /tmp/packages/"$(uname -m)"
+sudo cp -a /home/"$NME"/packages/* /tmp/packages/"$(uname -m)"

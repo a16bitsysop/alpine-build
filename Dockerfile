@@ -15,7 +15,8 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
 &&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-COPY --chmod=755 just-build.sh /usr/local/bin/
+COPY just-build.sh /usr/local/bin/
+RUN chmod 755 /usr/local/bin/just-build.sh
 
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
@@ -32,10 +33,12 @@ ENV REPO=main
 # pull-apk-source.sh main/lttng-ust
 
 # copy aport folder into container
-WORKDIR /tmp
-COPY --chown=${NME}:${NME} ${APORT} ./${APORT}
+WORKDIR /tmp/${APORT}
+COPY ${APORT} ./
+RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN just-build.sh ${APORT}
+RUN pwd && ls -lah
+RUN just-build.sh
 
 ##################################################################################################
 FROM buildbase AS buildaport
@@ -51,7 +54,9 @@ RUN ls -lah /tmp/packages
 # pull-apk-source.sh community/lttng-tools
 
 # copy aport folder into container
-WORKDIR /tmp
-COPY --chown=${NME}:${NME} ${APORT} ./${APORT}
+WORKDIR /tmp/${APORT}
+COPY ${APORT} ./
+RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN just-build.sh ${APORT}
+RUN pwd && ls -lah
+RUN just-build.sh

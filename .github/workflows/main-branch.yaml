@@ -32,6 +32,21 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
+        name: Docker label info
+        id: docklabel
+        run: |
+          echo "::set-output name=ref::$GITHUB_REF_NAME"
+          echo "::set-output name=sha::$GITHUB_SHA"
+          echo "::set-output name=repo::$GITHUB_REPOSITORY"
+          echo "::set-output name=timestamp::$(date '+%Y%m%d_%H%M%S')"
+      -
+        name: Show Labels
+        run: |
+          echo "Ref: ${{ steps.docklabel.outputs.ref }}"
+          echo "Sha: ${{ steps.docklabel.outputs.sha }}"
+          echo "Repo ${{ steps.docklabel.outputs.repo }}"
+          echo "Stamp: ${{ steps.docklabel.outputs.timestamp}}"
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       -
@@ -47,9 +62,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - 
-        name: Get Timestamp
-        run: echo "timestamp=$(date '+%Y%m%d_%H%M%S')" >> $GITHUB_ENV
       -
         name: Build and push
         uses: docker/build-push-action@v2
@@ -58,5 +70,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/$GITHUB_REPOSITORY:${{env.timestamp}}
-            ghcr.io/$GITHUB_REPOSITORY:latest
+            ${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
+            ${{ steps.docklabel.outputs.repo }}

@@ -13,6 +13,7 @@ subpackages="$pkgname-doc $pkgname-dev $pkgname-tools::noarch py3-lttng:pyagent"
 source="https://lttng.org/files/lttng-ust/lttng-ust-$pkgver.tar.bz2"
 
 build() {
+	foobar
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \

@@ -37,6 +37,8 @@ COPY ${APORT} ./
 RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -lah
+RUN abuild checksum
+RUN abuild deps
 RUN just-build.sh
 
 ##################################################################################################
@@ -58,4 +60,6 @@ COPY ${APORT} ./
 RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -lah
+RUN abuild checksum
+RUN abuild deps
 RUN just-build.sh

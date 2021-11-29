@@ -39,7 +39,7 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 RUN pwd && ls -lah
 RUN abuild checksum
 RUN sudo apk update && abuild deps
-RUN just-build.sh
+RUN echo "Arch is: $(abuild -A) && abuild -K -P /tmp/pkg
 
 ##################################################################################################
 FROM buildbase AS buildaport
@@ -62,4 +62,4 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 RUN pwd && ls -lah
 RUN abuild checksum
 RUN sudo apk update && abuild deps
-RUN just-build.sh
+RUN echo "Arch is: $(abuild -A) && abuild -K -P /tmp/pkg

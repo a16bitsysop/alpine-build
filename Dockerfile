@@ -7,7 +7,7 @@ ARG NME
 
 # install abuild deps and add /tmp/packages to repositories
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
-&&  echo /tmp/packages >> /etc/apk/repositories
+&&  echo /tmp/pkg >> /etc/apk/repositories
 
 # setup build user
 RUN adduser -D ${NME} && addgroup ${NME} abuild \
@@ -21,7 +21,6 @@ RUN chmod 755 /usr/local/bin/just-build.sh
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}
-RUN mkdir "$HOME"/packages
 
 ##################################################################################################
 FROM buildbase AS builddep
@@ -47,8 +46,8 @@ ENV APORT=lttng-tools
 ENV REPO=community
 
 # copy built packages from previous step
-COPY --from=builddep /tmp/packages/* /tmp/packages/
-RUN ls -lah /tmp/packages
+COPY --from=builddep /tmp/pkg/* /tmp/pkg/
+RUN ls -lah /tmp/pkg
 
 # pull source on host with
 # pull-apk-source.sh community/lttng-tools

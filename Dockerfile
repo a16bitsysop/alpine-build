@@ -15,9 +15,6 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 &&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
 &&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
-COPY just-build.sh /usr/local/bin/
-RUN chmod 755 /usr/local/bin/just-build.sh
-
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}

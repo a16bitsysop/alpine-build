@@ -18,10 +18,3 @@ echo "Arch is: $(uname -m)"
 abuild checksum
 abuild -A
 abuild -rK -P /tmp/pkg
-
-APKS=$(find /tmp/pkg -name APKINDEX.tar.gz | wc -l)
-if [ "$APKS" -lt 1 ]
-then
-  echo "no apks built, exiting"
-  exit 1
-fi

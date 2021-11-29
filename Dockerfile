@@ -38,7 +38,7 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -lah
 RUN abuild checksum
-RUN abuild deps
+RUN sudo apk update && abuild deps
 RUN just-build.sh
 
 ##################################################################################################
@@ -61,5 +61,5 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -lah
 RUN abuild checksum
-RUN abuild deps
+RUN sudo apk update && abuild deps
 RUN just-build.sh

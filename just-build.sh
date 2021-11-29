@@ -11,10 +11,7 @@ then
   exit 2
 fi
 
-echo "Updating ..."
-sudo apk update
 echo "Building ..."
 echo "Arch is: $(uname -m)"
-abuild checksum
 abuild -A
-abuild -rK -P /tmp/pkg
+abuild -K -P /tmp/pkg

@@ -33,7 +33,7 @@ WORKDIR /tmp/${APORT}
 COPY ${APORT} ./
 RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN pwd && ls -lah
+RUN pwd && ls -lahR
 RUN abuild checksum
 RUN sudo apk update && abuild deps
 RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
@@ -46,7 +46,7 @@ ENV REPO=community
 
 # copy built packages from previous step
 COPY --from=builddep /tmp/pkg/* /tmp/pkg/
-RUN ls -lah /tmp/pkg
+RUN ls -lahR /tmp/pkg
 
 # pull source on host with
 # pull-apk-source.sh community/lttng-tools
@@ -56,7 +56,7 @@ WORKDIR /tmp/${APORT}
 COPY ${APORT} ./
 RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
-RUN pwd && ls -lah
+RUN pwd && ls -lahR
 RUN abuild checksum
 RUN sudo apk update && abuild deps
 RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg

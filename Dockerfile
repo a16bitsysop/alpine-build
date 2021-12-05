@@ -5,7 +5,8 @@ ARG NME=builder
 FROM alpine:${DVER} AS buildbase
 ARG NME
 
-# install abuild deps and add /tmp/packages to repositories
+RUN apk update
+# install abuild deps and add /tmp/pkg to repositories
 RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
 &&  echo /tmp/pkg >> /etc/apk/repositories
 
@@ -18,6 +19,7 @@ RUN adduser -D ${NME} && addgroup ${NME} abuild \
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"
 USER ${NME}
+WORKDIR /tmp/pkg
 
 ##################################################################################################
 FROM buildbase AS builddep
@@ -35,7 +37,7 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -RC
 RUN abuild checksum
-RUN sudo apk update && abuild deps
+RUN abuild deps
 RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
 
 ##################################################################################################
@@ -58,5 +60,5 @@ RUN sudo chown -R ${NME}:${NME} ../${APORT}
 
 RUN pwd && ls -RC
 RUN abuild checksum
-RUN sudo apk update && abuild deps
+RUN abuild deps
 RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg

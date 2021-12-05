@@ -70,5 +70,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
-            ${{ steps.docklabel.outputs.repo }}
+            ghcr.io/${{ steps.docklabel.outputs.repo }}:${{ steps.docklabel.outputs.sha }}
+            ghcr.io/${{ steps.docklabel.outputs.repo }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

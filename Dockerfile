@@ -1,20 +1,13 @@
 ARG DVER=edge
-ARG NME=builder
+ARG NME=devuser
 
 ##################################################################################################
-FROM alpine:${DVER} AS buildbase
+FROM registry.gitlab.com/a16bitsysop/alpine-dev-local/main:latest AS buildbase
 ARG NME
 
-RUN apk update
-# install abuild deps and add /tmp/pkg to repositories
-RUN apk add --no-cache -u alpine-conf alpine-sdk atools findutils gdb git pax-utils sudo \
+# install extra packages and add /tmp/pkg to repositories
+RUN apk add --no-cache -u findutils gdb \
 &&  echo /tmp/pkg >> /etc/apk/repositories
-
-# setup build user
-RUN adduser -D ${NME} && addgroup ${NME} abuild \
-&&  echo "Defaults  lecture=\"never\"" > /etc/sudoers.d/${NME} \
-&&  echo "${NME} ALL=NOPASSWD : ALL" >> /etc/sudoers.d/${NME} \
-&&  sed "s/ERROR_CLEANUP.*/ERROR_CLEANUP=\"\"/" -i /etc/abuild.conf
 
 # create keys and copy to global folder, switch to build user
 RUN su ${NME} -c "abuild-keygen -a -i -n"

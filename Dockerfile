@@ -24,13 +24,12 @@ ENV REPO=main
 
 # copy aport folder into container
 WORKDIR /tmp/${APORT}
-COPY ${APORT} ./
-RUN doas chown -R ${NME}:${NME} ../${APORT}
+COPY --chown=${NME}:${NME} ${APORT} ./
 
 RUN pwd && ls -RC
 RUN abuild checksum
 RUN abuild deps
-RUN echo "Arch is: $(abuild -A)" && abuild -K -P /tmp/pkg
+RUN echo "Arch is: $(abuild -A)" && abuild -P /tmp/pkg
 
 ##################################################################################################
 FROM buildbase AS buildaport
@@ -47,8 +46,7 @@ RUN ls -RC /tmp/pkg
 
 # copy aport folder into container
 WORKDIR /tmp/${APORT}
-COPY ${APORT} ./
-RUN sudo chown -R ${NME}:${NME} ../${APORT}
+COPY --chown=${NME}:${NME} ${APORT} ./
 
 RUN pwd && ls -RC
 RUN abuild checksum
